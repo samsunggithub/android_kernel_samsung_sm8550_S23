@@ -1,0 +1,52 @@
+name: Build Project
+
+on:
+  # 触发条件，例如 push 到 main 分支
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 安装 Clang/LLVM 使用 apt 包管理器
+      - name: Install Clang, LLVM, and LLD using apt
+        run: |
+          sudo apt update
+          sudo apt install -y clang llvm lld
+
+      # 或者，从指定的 URL 下载 Clang/LLVM 的预构建版本
+      # - name: Download and extract Clang/LLVM prebuilt
+      #   run: |
+      #     wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r450784e.tar.gz
+      #     tar -xzvf clang-r450784e.tar.gz
+      #     echo "::add-path::/path/to/clang/bin" # 将解压后的 bin 目录添加到 PATH 中，注意替换实际路径
+
+      # 安装所需的其他依赖包
+      - name: Install required packages
+        run: |
+          sudo apt install -y git zip build-essential xz-utils bison flex libz-dev libssl-dev libelf-dev bc cpio python3 pahole
+
+      # 运行构建脚本前的清理操作
+      - name: Clean build environment
+        run: |
+          make clean
+          rm -rf ./out
+
+      # 运行构建脚本，替换 <your defconfig> 为实际的配置文件
+      - name: Run build script
+        run: ./build.sh kalama_gki_defconfig
+
+      # 上传构建输出作为 Artifacts（可选）
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Outputs
+          path: |
+            out/arch/arm64/boot/Image
+            out/AnyKernel3/
