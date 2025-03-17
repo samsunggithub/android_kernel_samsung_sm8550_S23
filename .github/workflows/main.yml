@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # 安装 Clang/LLVM 使用 apt 包管理器
       - name: Install Clang, LLVM, and LLD using apt
@@ -44,7 +44,7 @@ jobs:
 
       # 上传构建输出作为 Artifacts（可选）
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Build Outputs
           path: |
