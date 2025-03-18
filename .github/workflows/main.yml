@@ -38,6 +38,13 @@ jobs:
           make clean
           rm -rf ./out
 
+      # 添加KernelSU-Next
+      - name: Setup KernelSU-Next
+        run: |
+          if [ -d "./KernelSU-Next" ]; then rm -rf "./KernelSU-Next"; fi
+          if [ -d "./drivers/KernelSU-Next" ]; then rm -rf "./drivers/KernelSU-Next"; fi
+          curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
+
       # 运行构建脚本，替换 <your defconfig> 为实际的配置文件
       - name: Run build script
         run: ./build.sh kalama_gki_defconfig
